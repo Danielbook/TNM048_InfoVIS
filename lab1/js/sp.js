@@ -37,11 +37,18 @@ function sp(){
     //Load data
     d3.csv("data/OECD-better-life-index-hi.csv", function(error, data) {
         self.data = data;
-        
+
         //define the domain of the scatter plot axes
-        //...
-        
-        draw();
+        x.domain([0, d3.max(data, function(d) {
+          return d["Household income"];
+        })]);
+
+        y.domain([0, d3.max(data, function(d) {
+          return d["Life satisfaction"];
+        })]);
+
+
+      draw();
 
     });
 
@@ -55,8 +62,9 @@ function sp(){
             .call(xAxis)
             .append("text")
             .attr("class", "label")
-            .attr("x", width)
-            .attr("y", -6);
+            .attr("x", width-20)
+            .attr("y", -6)
+            .text("Household income");
             
         // Add y axis and title.
         svg.append("g")
@@ -64,9 +72,11 @@ function sp(){
             .call(yAxis)
             .append("text")
             .attr("class", "label")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em");
+            .attr("transform", "rotate(0)")
+            .attr("y", 1)
+            .attr("x", 3)
+            .attr("dy", ".71em")
+            .text("Life satisfaction");
             
         // Add the scatter dots.
         svg.selectAll(".dot")
@@ -74,8 +84,14 @@ function sp(){
             .enter().append("circle")
             .attr("class", "dot")
             //Define the x and y coordinate data values for the dots
-            //...
-            //tooltip
+            .attr("cx", function(d){
+              return x(d["Household income"]);
+            })
+            .attr("cy", function(d){
+              return y(d["Life satisfaction"])
+            })
+            .attr("r", 3)
+          //tooltip
             .on("mousemove", function(d) {
                 //...    
             })
@@ -83,7 +99,7 @@ function sp(){
                 //...   
             })
             .on("click",  function(d) {
-                //...    
+                //...
             });
     }
 

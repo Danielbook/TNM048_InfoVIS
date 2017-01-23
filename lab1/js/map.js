@@ -11,7 +11,7 @@ function map(){
         height = mapDiv.height() - margin.top - margin.bottom;
 
     //initialize color scale
-    //...
+    var countryColors = d3.scale.category20();
     
     //initialize tooltip
     //...
@@ -32,7 +32,7 @@ function map(){
 
     // load data and draw the map
     d3.json("data/world-topo.topojson", function(error, world) {
-        
+
         var countries = topojson.feature(world, world.objects.countries).features;
         
         //load summary data
@@ -48,7 +48,7 @@ function map(){
 
         //initialize a color country object	
         var cc = {};
-		
+
         //...
 
         country.enter().insert("path")
@@ -57,7 +57,7 @@ function map(){
             .attr("id", function(d) { return d.id; })
             .attr("title", function(d) { return d.properties.name; })
             //country color
-            //...
+            .style("fill", function(d){return countryColors(d.properties.name);})
             //tooltip
             .on("mousemove", function(d) {
                 //...
