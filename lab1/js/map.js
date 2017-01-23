@@ -14,7 +14,9 @@ function map() {
   var countryColors = d3.scale.category20();
 
   //initialize tooltip
-  //...
+  var tooltip = d3.select("#map").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
 
   var projection = d3.geo.mercator()
     .center([50, 60])
@@ -36,9 +38,11 @@ function map() {
     var countries = topojson.feature(world, world.objects.countries).features;
 
     //load summary data
-    //...
+    d3.csv("data/OECD-better-life-index-hi.csv", function(error, data) {
+      draw(countries, data);
+    });
 
-    draw(countries);
+    // draw(countries);
 
   });
 
@@ -48,7 +52,9 @@ function map() {
     //initialize a color country object
     var cc = {};
 
-    //...
+    data.forEach(function(d){
+      cc[d["Country"]] = countryColors(d["Country"]);
+    });
 
     country.enter().insert("path")
       .attr("class", "country")
@@ -61,14 +67,21 @@ function map() {
       })
       //country color
       .style("fill", function (d) {
-        return countryColors(d.properties.name);
+        return cc[d.properties.name];
       })
       //tooltip
       .on("mousemove", function (d) {
-        //...
+        tooltip.transition()
+          .duration(150)
+          .style("opacity", 0.85);
+        tooltip.html(d.properties.name)
+          .style("left", (d3.mouse(this)[0]) + "px")
+          .style("top", (d3.mouse(this)[1] - 30) + "px");
       })
-      .on("mouseout", function (d) {
-        //...
+      .on("mouseout", function () {
+        tooltip.transition()
+          .duration(150)
+          .style("opacity", 0);
       })
       //selection
       .on("click", function (d) {

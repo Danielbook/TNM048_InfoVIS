@@ -12,7 +12,9 @@ function sp() {
   var color = ["#87ceeb", "#000000"];
 
   //initialize tooltip
-  //...
+  var tooltip = d3.select("#sp").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
   var x = d3.scale.linear()
     .range([0, width]);
@@ -92,10 +94,17 @@ function sp() {
       .attr("r", 5)
       //tooltip
       .on("mousemove", function (d) {
-        //...
+        tooltip.transition()
+          .duration(150)
+          .style("opacity", 0.85);
+        tooltip.html(d["Country"])
+          .style("left", (d3.event.pageX - 50) + "px")
+          .style("top", (d3.event.pageY - 100) + "px");
       })
-      .on("mouseout", function (d) {
-        //...
+      .on("mouseout", function () {
+        tooltip.transition()
+          .duration(150)
+          .style("opacity", 0);
       })
       .on("click", function (d) {
         sp1.selectDot(d["Country"]);
