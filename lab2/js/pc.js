@@ -2,6 +2,8 @@ function pc(){
 
     var self = this; // for internal d3 functions
 
+    var colors = d3.scale.category10();
+
     var pcDiv = $("#pc");
 
     var margin = [30, 10, 10, 10],
@@ -45,8 +47,7 @@ function pc(){
         var kmeansRes = kmeans(data,k);
 
         //initialize the cluster colors
-        //...
-        
+
         draw(kmeansRes);
     });
 
@@ -67,8 +68,8 @@ function pc(){
             .data(self.data)
             .enter().append("svg:path")
             .attr("d", path)
-            .style("stroke", function(d) { return "hsl(" + Math.random() * 360 + ",100%,50%)"; }); 
-    
+            .style("stroke", function(d, i) { return colors(kmeansRes[i]); });
+
             //Assign the cluster colors
             //..
     

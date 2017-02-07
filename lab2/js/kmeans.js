@@ -40,6 +40,32 @@ function getClosestCentroid(point, centroids, keys){
   return assignedCluster;
 }
 
+function recalcCentroid(data, cluster_array, centroids, keys){
+  var temp = [];
+
+  for (var i = 0; i < centroids.length; i++) {
+    var count = 0;
+    var point = {};
+
+    keys.forEach(function(dimension){
+      var avg = 0;
+
+      for (var j = 0; j < data.length; j++) {
+        if(cluster_array[j] == i){
+
+          avg+= Number(data[j][dimension]);
+          count++;
+        }
+      }
+
+      point[dimension] = avg/count;
+
+    });
+    temp.push(point);
+  }
+  return temp;
+}
+
 function recalculateCentroid(data, index, centroids){
   var avgDistToCentroid = []; //Sum of all distances to centroids within each cluster
   var nrOfDistInClusters = [];  //Basically what value to divide the sum of all distances for each cluster
@@ -59,9 +85,9 @@ function recalculateCentroid(data, index, centroids){
   for(var i = 0; i < index.length; i++){
     tempIndex = index[i]; //This is the index of the nearest centroid for data-objects
 
-    avgDistToCentroid[tempIndex][0] += Math.sqrt(Math.pow(Number(data[i].A) - centroids[tempIndex][0], 2));
-    avgDistToCentroid[tempIndex][1] += Math.sqrt(Math.pow(Number(data[i].B) - centroids[tempIndex][1], 2));
-    avgDistToCentroid[tempIndex][2] += Math.sqrt(Math.pow(Number(data[i].C) - centroids[tempIndex][2], 2));
+    avgDistToCentroid[tempIndex][0] += Math.sqrt(Math.pow(Number(data[i].A) - Number(centroids[tempIndex].A), 2));
+    avgDistToCentroid[tempIndex][1] += Math.sqrt(Math.pow(Number(data[i].B) - Number(centroids[tempIndex].B), 2));
+    avgDistToCentroid[tempIndex][2] += Math.sqrt(Math.pow(Number(data[i].C) - Number(centroids[tempIndex].C), 2));
 
     nrOfDistInClusters[index[i]] = (nrOfDistInClusters[index[i]] + 1);
   }
@@ -72,8 +98,8 @@ function recalculateCentroid(data, index, centroids){
       avgDistToCentroid[i][j] = (avgDistToCentroid[i][j] / nrOfDistInClusters[i]);
     }
   }
-  console.log(avgDistToCentroid);
-  console.log(nrOfDistInClusters);
+  //console.log(avgDistToCentroid);
+  //console.log(nrOfDistInClusters);
 
   return avgDistToCentroid; // Returns the average distances from each centroid in each cluster
 }
@@ -118,20 +144,17 @@ function kmeans(data, k) {
       cluster_array[i] = getClosestCentroid(d, centroids, dimensions);
     });
 
-    // cluster_array = getClosestCentroid(data, centroids);   //Returns the index of the closest centroid
-    //console.log(index);
-
     //3. Recalculate centroids positions to be in the center of the cluster. Average values in all dimensions
-    avgDistFromCentroid = recalculateCentroid(data, index, centroids);
+    avgDistFromCentroid = recalcCentroid(data, cluster_array, centroids, dimensions);
 
 
     //4. Check quality of cluster.  Sum of the squared distances within each cluster
-    quality = checkQuality(data, dimensions, centroids, cluster_array);
+    quality = checkQuality(data, dimensions, avgDistFromCentroid, cluster_array);
     qualityDiff = Math.abs(oldQuality - quality);
     oldQuality = quality;
     n++;
     console.log("Quality: ", qualityDiff);
 
-  } while(qualityDiff > 0);
+  } while(qualityDiff > 0.1);
   return cluster_array;
 }
