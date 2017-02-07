@@ -32,9 +32,11 @@ function pc(){
         
                 //assign the the axis scale  between [0 1]
                 //...
-        
+
+                .domain([0,1])
+
                 .range([height, 0])
-                ); 
+            );
         }));
         
         self.data = data;
