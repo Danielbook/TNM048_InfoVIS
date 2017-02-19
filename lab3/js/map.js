@@ -107,11 +107,7 @@ function map(data) {
   function filterMag(value) {
     d3.selectAll("circle")
       .style("opacity", function(d){
-        if(clustered) {
-          return (d.magnitude > value ) ? 1 : 0;
-        } else {
-          return (d.properties.magnitude > value ) ? 1 : 0;
-        }
+        return (d.properties.magnitude > value ) ? 1 : 0;
       });
   }
 
