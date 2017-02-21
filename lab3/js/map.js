@@ -71,15 +71,14 @@ function map(data) {
                     "place": d.place,
                     "time": d.time
                 }
-            }
+            };
             data.push(feature);
         });
         return data;
     }
 
     //Draws the map and the points
-    function draw(countries)
-    {
+    function draw(countries) {
         //draw map
         var country = g.selectAll(".country").data(countries);
         country.enter().insert("path")
@@ -102,7 +101,7 @@ function map(data) {
             })
             .attr("r", "5px")
             .attr("fill", "orange");
-    };
+    }
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
@@ -114,13 +113,10 @@ function map(data) {
         //console.log("hej");
         //console.log(value);
 
-        g.selectAll("circle")
-            .attr("opacity", function(d) {
-                var deltaTime = format.parse(d.properties.time);
-                if(deltaTime < value[0] && deltaTime > value[1])
-                    return 1.0;
-
-                return 0.25;
+        d3.selectAll("circle")
+            .style("opacity", function(d) {
+                var deltaTime = new Date(d.properties.time);
+                return (value[0].getTime() <= deltaTime.getTime() && value[1].getTime() >= deltaTime.getTime()) ? 1 : 0.15;
             });
     };
 
