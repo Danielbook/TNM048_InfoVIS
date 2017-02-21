@@ -11,7 +11,7 @@ function area(data) {
             height2 = areaDiv.height() - margin2.top - margin2.bottom;
 
     //Sets the data format
-    var format = d3.time.format.utc("");//Complete the code
+    var format = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");//Complete the code
 
     //Sets the scales 
     var x = d3.time.scale().range([0, width]),
@@ -72,8 +72,8 @@ function area(data) {
             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
     //Initializes the axis domains for the big chart
-    x.domain([10,10]);//Complete the code
-    y.domain([4, 10]);//Complete the code
+    x.domain(d3.extent(data, function(d){return format.parse(d.time)}));
+    y.domain(d3.extent(data, function(d){return d.mag}));
     //Initializes the axis domains for the small chart
     x2.domain(x.domain());
     y2.domain(y.domain());
@@ -123,5 +123,7 @@ function area(data) {
         focus.select("path").attr("d", area);
         focus.select(".x.axis").call(xAxis);
         //Complete the code
+        //console.log(brush.extent());
+        map1.filterTime(brush.extent());
     }
 }

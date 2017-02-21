@@ -58,6 +58,21 @@ function map(data) {
         var data = [];
         array.map(function (d, i) {
             //Complete the code
+            var feature = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [d.lon, d.lat]
+                },
+                "properties": {
+                    "depth": d.depth,
+                    "id": d.id,
+                    "mag": d.mag,
+                    "place": d.place,
+                    "time": d.time
+                }
+            }
+            data.push(feature);
         });
         return data;
     }
@@ -75,17 +90,38 @@ function map(data) {
                 .style("stroke", "white");
 
         //draw point        
-        var point //Complete the code
+        var point = g.selectAll("circle")
+            .data(geoData.features).enter()
+            .append("circle")
+            .attr("class", "point")
+            .attr("cx", function (d) {
+                return projection(d.geometry.coordinates)[0];
+            })
+            .attr("cy", function (d) {
+                return projection(d.geometry.coordinates)[1];
+            })
+            .attr("r", "5px")
+            .attr("fill", "orange");
     };
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
-        //Complete the code
+        
     }
     
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
-        //Complete the code
+        //console.log("hej");
+        //console.log(value);
+
+        g.selectAll("circle")
+            .attr("opacity", function(d) {
+                var deltaTime = format.parse(d.properties.time);
+                if(deltaTime < value[0] && deltaTime > value[1])
+                    return 1.0;
+
+                return 0.25;
+            });
     };
 
     //Calls k-means function and changes the color of the points  
