@@ -20,6 +20,8 @@ function map(data) {
 
     var filterdData = data;
 
+    var clustered = false;
+
     //Sets the colormap
     var colors = colorbrewer.Set3[10];
 
@@ -105,7 +107,14 @@ function map(data) {
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
-        
+      d3.selectAll("circle")
+        .style("opacity", function(d){
+          if(clustered) {
+              return (d.magnitude > value ) ? 1 : 0;
+            } else {
+              return (d.properties.magnitude > value ) ? 1 : 0;
+            }
+        });
     }
     
     //Filters data points according to the specified time window
