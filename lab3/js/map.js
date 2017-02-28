@@ -120,7 +120,22 @@ function map(data) {
   };
 
   //Calls k-means function and changes the color of the points
-  this.cluster = function (value) {
+  this.cluster = function () {
+    k = document.getElementById("k").value;
+    if(k>10) k=10; // Only allow for 10
+
+    kmeans(geoData.features, k);
+
+    g.selectAll("circle")
+        .attr("fill", (d) =>{
+          return colors[d.cluster];
+        });
+
+    g.selectAll(".country").enter().insert("path")
+        .style("fill",(d) =>{
+          return colors[d.cluster];
+        })
+        .style("stroke", "white");
 
   };
 
